@@ -18,7 +18,7 @@ window.onload = function () {
 		return new Date(input * 1000).toLocaleString();
 	});
 	new Vue({
-		el:'.znsArea',
+		el:'.box',
 		data:{
 			txt:'',
 			msgData:[],
@@ -132,7 +132,7 @@ window.onload = function () {
 </head>
 
 <body>
-<div class="znsArea">
+<div class="box">
 <!--留言-->
  <div class="takeComment">
     <textarea name="textarea" class="takeTextField" id="tijiaoText" v-model="txt" @keydown.enter.prevent="addFn()"></textarea>
