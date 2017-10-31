@@ -1,0 +1,166 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>微博ajax接口测试</title>
+<link href="css/weibo.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+	[v-cloak] {
+		display: none;
+	}
+</style>
+<script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
+<script>
+window.onload = function () {
+	var URL = 'php/weibo.php';
+	Vue.filter('toDou',function (input) {
+		return new Date(input * 1000).toLocaleString();
+	});
+	new Vue({
+		el:'.znsArea',
+		data:{
+			txt:'',
+			msgData:[],
+			now: 0,
+			pageNum: 0
+		},
+		methods:{
+			addFn:function () {
+				if (this.txt == '') {
+					alert('输入的内容不能为空！');
+					return;
+				}
+				this.$http.get(URL,{
+					act:'add',
+					content:this.txt
+				}).then(function (res) {
+					var json = res.data;
+					this.msgData.unshift({
+						cont: this.txt,
+						time: json.time,
+						id: json.id,
+					});
+					this.txt = '';
+					this.msgData = [];
+					this.getPageData(1);
+					this.now = 0;
+					this.getPage();
+				});
+			},
+			clickAcc:function (id,index) {
+				this.$http({
+					url: URL,
+					data: {
+						act: 'acc',
+						id: id
+					}
+				}).then(function (res) {
+					this.msgData[index].acc++;
+					alert('干的好，NICE！');
+				});
+			},
+			clickAct:function (id,i) {
+				this.$http({
+					url: URL,
+					data:{
+						act: 'ref',
+						id: id
+					}
+				}).then(function () {
+					this.msgData[i].act++;
+					alert('踩的漂亮！');
+				});
+			},
+			dele:function (id,i) {
+				this.$http({
+					url: URL,
+					data:{
+						act: 'del',
+						id: id
+					}
+				}).then(function (res) {
+					this.msgData = [];
+					this.getPageData(this.now);
+					this.getPage();
+				});
+			},
+			clickPage:function (i) {
+				this.msgData = [];
+				this.getPageData(i);
+				this.now = i;
+			},
+			getPageData:function (n) {
+				this.$http({
+					url:URL,
+					data:{
+						act: 'get',
+						page: n
+					}
+				}).then(function (res) {
+					data = res.data;
+					for (var i = 0; i < data.length; i++) {
+						this.msgData.push({
+							cont: data[i].content,
+							acc: data[i].acc,
+							act: data[i].ref,
+							id: data[i].id,
+							time: data[i].time
+						});
+					}
+					
+				});
+			},
+			getPage:function (n) {
+				this.$http({
+					url:URL,
+					data:{
+						act: 'get_page_count'
+					}
+				}).then(function (res) {
+					this.pageNum = res.data.count;
+				});
+			}
+		},
+		mounted:function () {
+			this.getPageData(1);
+			this.getPage();
+		}
+	});
+}
+</script>
+</head>
+
+<body>
+<div class="znsArea">
+<!--留言-->
+ <div class="takeComment">
+    <textarea name="textarea" class="takeTextField" id="tijiaoText" v-model="txt" @keydown.enter.prevent="addFn()"></textarea>
+    <div class="takeSbmComment">
+        <input type="button" class="inputs" value="" @click="addFn()"/>
+        <span>(可按 Enter 回复)</span>
+    </div>
+</div>
+<!--已留-->
+    <div class="commentOn">
+        <div class="noContent" v-show="msgData.length == 0" v-text="暂无留言"></div>
+        <div class="messList">
+        	<div class="reply" v-for="(item, index) in msgData" v-cloak>
+                <p class="replyContent" v-text="item.cont"></p>
+                <p class="operation">
+                    <span class="replyTime">{{item.time | toDou}}</span>
+                    <span class="handle">
+                    	<a href="javascript:;" class="top" @click="clickAcc(item.id,index)" v-text="item.acc"></a>
+                        <a href="javascript:;" class="down_icon" @click="clickAct(item.id,index)" v-text="item.act"></a>
+                        <a href="javascript:;" class="cut" @click="dele(item.id,index)">删除</a>
+                    </span>
+                </p>
+            </div>
+            <div class="page">
+	        	<a href="javascript:;" v-for="(item, index) in pageNum" @click="clickPage(index)" :class="{active:index == now}" v-show="msgData.length != 0" v-text="item"></a>
+	        </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
