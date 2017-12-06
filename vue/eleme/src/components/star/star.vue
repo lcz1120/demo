@@ -9,6 +9,7 @@
 	const cls_on = 'on';
 	const cls_half = 'half';
 	const cls_off = 'off';
+
 	export default {
 		props: {
 			size: {
@@ -20,23 +21,23 @@
 		},
 		computed: {
 			starType() {
-				return 'star-' + this.size
+				return 'star-' + this.size;
 			},
 			itemClasses() {
-				let result = []
-				let score = Math.floor(this.score * 2) / 2
-				let hasDecimal = score % 1 !== 0
-				let integer = Math.floor(score)
+				let result = [];
+				let score = Math.floor(this.score * 2) / 2;
+				let hasDecimal = score % 1 !== 0;
+				let integer = Math.floor(score);
 				for (let i = 0; i < integer; i++) {
-					result.push(cls_on)
+					result.push(cls_on);
 				}
 				if (hasDecimal) {
-					result.push(cls_half)
+					result.push(cls_half);
 				}
 				while (result.length < len) {
-					result.push(cls_off)
+					result.push(cls_off);
 				}
-				return result
+				return result;
 			}
 		}
 	}

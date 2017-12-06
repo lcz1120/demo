@@ -33,6 +33,9 @@
 				<div class="detail-main">
 					<h1 class="name">{{seller.name}}</h1>
 					<star :size="48" :score="seller.score"></star>
+					<div class="detail-title">
+						<h1>优惠信息</h1>
+					</div>
 				</div>
 			</div>
 			<div class="detail-close" @click="hideDatail">
@@ -42,7 +45,7 @@
 	</div>
 </template>
 <script type="text/ecmascript-6">
-	import star from "components/star/star"
+	import star from "components/star/star";
 
 	export default {
 		props: {
@@ -57,14 +60,14 @@
 		},
 		methods: {
 			showDatail() {
-				this.datail = true
+				this.datail = true;
 			},
 			hideDatail() {
-				this.datail = false
+				this.datail = false;
 			}
 		},
 		created() {
-			this.classMap = ['decrease','discount','special','invoice','guarantee']
+			this.classMap = ['decrease','discount','special','invoice','guarantee'];
 		},
 		components: {
 			star
@@ -72,7 +75,7 @@
 	}
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
-	@import "../../common/stylus/mixin"
+	@import "../../common/stylus/mixin";
 
 	.header
 		color: #fff
@@ -214,6 +217,14 @@
 						display: block
 						width: 210px
 						margin: 16px auto 0
+			.detail-title
+				padding: 0 36px
+				margin-top: 28px
+				h1
+					font-size: 14px
+					font-weight: 700
+					color: rgb(255, 255, 255)
+					line-height: 14px
 			.detail-close
 				position: relative
 				width: 32px
