@@ -232,4 +232,5 @@
 				font-size: 32px
 				color: rgba(255, 255, 255, .5)
 				margin: -64px auto 0
+				
 </style>
